@@ -1,0 +1,22 @@
+{
+  "name": "seng480c-a2",
+  "version": "1.0.0",
+  "description": "Data physicalization of recipes.",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LeviMWilliamson/SENG480C-A2.git"
+  },
+  "author": "",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/LeviMWilliamson/SENG480C-A2/issues"
+  },
+  "homepage": "https://github.com/LeviMWilliamson/SENG480C-A2#readme",
+  "dependencies": {
+    "quagga": "^0.12.1"
+  }
+}
