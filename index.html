@@ -3,9 +3,58 @@
 	<head>
 		<meta charset='utf-8'/>
 		<title>SENG480C-A2</title>
+		<style>
+			body {
+				margin: 0;
+				padding: 0;
+				display: grid;
+				grid-template-columns: 24ch 1fr;
+			}
+			aside {
+				border-right: 1px solid;
+				background: whitesmoke;
+				display: flex;
+				flex-direction: column;
+				height: 100vh;
+			}
+			#quagga-target video {
+				width: 100%;
+				height: auto;
+			}
+			#quagga-target canvas {
+				display: none;
+			}
+			#scanned-barcodes-list {
+				overflow-y: scroll;
+			}
+			#status {
+				padding: 1ch;
+				margin-bottom: 4ch;
+				background-color: lightyellow;
+			}
+			main > section {
+				padding: 4ch;
+			}
+		</style>
 		<script src='index.mjs' type='module' defer></script>
 	</head>
 	<body>
-		<div id='quagga-target'></div>
+		<aside>
+			<div id='quagga-target'></div>
+			<ul id='scanned-barcodes-list'></ul>
+		</aside>
+		<main>
+			<header id='status'>No current action.</header>
+			<section>
+				<button id='add-ingredient'>add ingredient</button>
+				<button id='remove-ingredient'>remove ingredient</button>
+				<h1>Recipe</h1>
+				<hr/>
+				<section>
+					<h2>Ingredients</h2>
+					<ol id='ingredients-list'></ol>
+				</section>
+			</section>
+		</main>
 	</body>
 </html>

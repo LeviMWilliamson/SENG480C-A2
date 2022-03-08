@@ -18,5 +18,8 @@
   "homepage": "https://github.com/LeviMWilliamson/SENG480C-A2#readme",
   "dependencies": {
     "quagga": "^0.12.1"
+  },
+  "devDependencies": {
+    "parcel": "^2.3.2"
   }
 }
