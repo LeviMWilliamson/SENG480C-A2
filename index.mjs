@@ -59,34 +59,46 @@ const recipeState = new Map([
 ])
 
 const ingredientsList = document.getElementById('ingredients-list')
+const writeRecipe = () => {
+	while(ingredientsList.firstChild)
+		ingredientsList.removeChild(ingredientsList.lastChild)
+
+	for(let ingredient of recipeState.values()) {
+		if(ingredient.quantity > 0) {
+			const ingredientEntry = document.createElement('li')
+			ingredientEntry.innerText = ingredient.quantity > 1 ?
+				`${ingredient.quantity} ${ingredient.measurement}s of ${ingredient.name}`
+				:
+				`A ${ingredient.measurement} of ${ingredient.name}`	
+			ingredientsList.append(ingredientEntry)
+		}
+	}
+}
+
+
 const applicationStates = {
 	none: {
-		message: 'No current action.',
+		message: 'No current action. 👨‍🍳',
 		messageColor: 'lightyellow',
 		callback: (_) => {}
 	},
 	addIngredient: {
-		message: 'Scan an ingredient to add it to your recipe!',
+		message: 'Scan an ingredient to add it to your recipe! 🍽',
 		messageColor: 'lightgreen',
 		callback: ingredientKey => {
 			const ingredient = recipeState.get(ingredientKey)
 			recipeState.set(ingredientKey, { ...ingredient,  quantity: ingredient.quantity + 1 })
-
-			while(ingredientsList.firstChild)
-				ingredientsList.removeChild(ingredientsList.lastChild)
-
-			for(let ingredient of recipeState.values()) {
-				console.log(ingredient)
-				if(ingredient.quantity > 0) {
-					const ingredientEntry = document.createElement('li')
-					ingredientEntry.innerText = ingredient.quantity > 1 ?
-						`${ingredient.quantity} ${ingredient.measurement}s of ${ingredient.name}`
-						:
-						`A ${ingredient.measurement} of ${ingredient.name}`	
-					ingredientsList.append(ingredientEntry)
-				}
-			}
-
+			writeRecipe()
+			setApplicationState(applicationStates.none)
+		}
+	},
+	removeIngredient: {
+		message: 'Scan an ingredient to remove it from your recipe. 🔪',
+		messageColor: 'lightred',
+		callback: ingredientKey => {
+			const ingredient = recipeState.get(ingredientKey)
+			recipeState.set(ingredientKey, { ...ingredient,  quantity: 0 })
+			writeRecipe()
 			setApplicationState(applicationStates.none)
 		}
 	}
@@ -102,6 +114,8 @@ const setApplicationState = (applicationState) => {
 
 const addIngredientButton = document.getElementById('add-ingredient')
 addIngredientButton.addEventListener('click', () => setApplicationState(applicationStates.addIngredient))
+const removeIngredientButton = document.getElementById('remove-ingredient')
+removeIngredientButton.addEventListener('click', () => setApplicationState(applicationStates.removeIngredient))
 
 // add scanned barcodes to sidelog
 const scannedBarcodesList = document.getElementById('scanned-barcodes-list')
