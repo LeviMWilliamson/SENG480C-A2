@@ -25,29 +25,68 @@ Quagga.init(
 	}
 )
 
-const validRecipeIngredientsMap = new Map([
-	['SUGAR', 'Sugar'],
-	['BAKING SODA', 'Baking Soda'],
-	['WATER', 'Water'],
-	['EGG', 'Egg'],
-	['FLOUR', 'Flour'],
-	['SALT', 'Salt'],
+const recipeState = new Map([
+	['SUGAR', {
+		name: 'Sugar',
+		measurement: 'Cup',
+		quantity: 0
+	}],
+	['BAKING SODA', {
+		name: 'Baking Soda',
+		measurement: 'Tablespoon',
+		quantity: 0
+	}],
+	['WATER', {
+		name: 'Water',
+		measurement: 'Cup',
+		quantity: 0
+	}],
+	['EGG', {
+		name: 'Egg',
+		measurement: 'Unit',
+		quantity: 0
+	}],
+	['FLOUR', {
+		name: 'Flour',
+		measurement: 'Cup',
+		quantity: 0
+	}],
+	['SALT', {
+		name: 'Salt',
+		measurement: 'Teaspoon',
+		quantity: 0
+	}],
 ])
 
 const ingredientsList = document.getElementById('ingredients-list')
 const applicationStates = {
 	none: {
 		message: 'No current action.',
-		mesageColor: 'lightyellow',
+		messageColor: 'lightyellow',
 		callback: (_) => {}
 	},
 	addIngredient: {
 		message: 'Scan an ingredient to add it to your recipe!',
 		messageColor: 'lightgreen',
-		callback: ingredient => {
-			const ingredientEntry = document.createElement('li')
-			ingredientEntry.innerText = ingredient
-			ingredientsList.append(ingredientEntry)
+		callback: ingredientKey => {
+			const ingredient = recipeState.get(ingredientKey)
+			recipeState.set(ingredientKey, { ...ingredient,  quantity: ingredient.quantity + 1 })
+
+			while(ingredientsList.firstChild)
+				ingredientsList.removeChild(ingredientsList.lastChild)
+
+			for(let ingredient of recipeState.values()) {
+				console.log(ingredient)
+				if(ingredient.quantity > 0) {
+					const ingredientEntry = document.createElement('li')
+					ingredientEntry.innerText = ingredient.quantity > 1 ?
+						`${ingredient.quantity} ${ingredient.measurement}s of ${ingredient.name}`
+						:
+						`A ${ingredient.measurement} of ${ingredient.name}`	
+					ingredientsList.append(ingredientEntry)
+				}
+			}
+
 			setApplicationState(applicationStates.none)
 		}
 	}
@@ -70,17 +109,17 @@ Quagga.onDetected(data => {
 	for(let datum of data)
 		if(datum.codeResult) {
 			const { code } = datum.codeResult
-			if(validRecipeIngredientsMap.has(code)) {
+			if(recipeState.has(code)) {
 				// get code data
-				const ingredient = validRecipeIngredientsMap.get(code)
+				const ingredient = recipeState.get(code)
 				
 				// log result
 				const listElement = document.createElement('li')
-				listElement.innerText = ingredient
+				listElement.innerText = code
 				scannedBarcodesList.append(listElement)
 
 				// execute application state callback
-				currentApplicationState.callback(ingredient)
+				currentApplicationState.callback(code)
 			} else {
 				console.error('failed to parse barcode: item not found in catalog')
 			}
